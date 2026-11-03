@@ -1,0 +1,28 @@
+services:
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: advertisements
+      POSTGRES_USER: advertisements
+      POSTGRES_PASSWORD: advertisements
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U advertisements"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    environment:
+      DATABASE_URL: >-
+        postgresql+asyncpg://advertisements:advertisements@database/advertisements
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:

@@ -1,0 +1,1 @@
+"""FastAPI advertisement service package."""
